@@ -1,0 +1,16 @@
+(define (sum term a next b)
+    (define (iter a result)
+        (define new_result (+ result (term a)))
+        (if (= a b)
+            new_result
+            (iter (next a) new_result)))
+    (iter a 0))
+(define (inc n) (+ n 1))
+(define (sum_cubes a b)
+    (sum cube a inc b))
+(sum_cubes 1 10)
+
+(define (identity x) x)
+(define (sum_integers a b)
+    (sum identity a inc b))
+(sum_integers 1 10)

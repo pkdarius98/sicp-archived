@@ -1,0 +1,10 @@
+(define (fast_expt a b)
+    (define (even? n)
+        (= (remainder n 2) 0))
+    (define (fast_expt_iter product base n)
+        (cond   
+            ((= n 0) product)
+            ((even? n) (fast_expt_iter product (* base base) (/ n 2)))
+            (else (fast_expt_iter (* product base) base (- n 1)))))
+    (fast_expt_iter 1 a b))
+(fast_expt 11 11111)

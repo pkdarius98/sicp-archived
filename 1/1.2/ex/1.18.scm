@@ -1,0 +1,12 @@
+(define (double n)
+    (+ n n))
+(define (halve n)
+    (/ n 2))
+(define (multi a b)
+    (define (multi_iter sum first second)
+        (cond
+            ((= second 0) sum)
+            ((even? second) (multi_iter sum (double first) (halve second)))
+            (else (multi_iter (+ sum first) first (- second 1)))))
+    (multi_iter 0 a b))
+(multi 2 3)
