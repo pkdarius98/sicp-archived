@@ -1,0 +1,8 @@
+(define (same_parity first . lst)
+    (define (iter lst)
+        (cond ((null? lst) '())
+            ((= (remainder first 2) (remainder (car lst) 2)) (append (cons (car lst) '()) (iter (cdr lst))))
+            (else (iter (cdr lst)))))
+    (cons first (iter lst)))
+(same_parity 1 2 3 4 5 6 7)
+(same_parity 2 3 4 5 6 7)

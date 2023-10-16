@@ -1,0 +1,5 @@
+(define (reverse items)
+    (if (null? items) 
+        '()
+        (append (reverse (cdr items)) (cons (car items) '()))))
+(reverse '(1 2 3 4 5))

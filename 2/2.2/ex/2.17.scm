@@ -1,0 +1,5 @@
+(define (last_pair items)
+    (if (null? (cdr items))
+        (car items)
+        (last_pair (cdr items))))
+(last_pair odd)
