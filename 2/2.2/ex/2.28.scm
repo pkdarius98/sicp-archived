@@ -1,0 +1,15 @@
+(define x (list (list (list 1 2 3) (list 4 5 6)) (list (list 7 8 9) (list 10 11 12))))
+x
+(define (fringe items)
+    (define (iter result items)
+        (cond ((null? items) items)
+            ((not (pair? items)) (append result (cons items '())))
+            (else (append (append result (iter '() (car items))) (iter '() (cdr items))))))
+    (iter '() items))
+(fringe x)
+
+(define (fringe items)
+    (cond ((null? items) '())
+          ((not (pair? items)) (cons items '()))
+          (else (append (fringe (car items)) (fringe (cdr items)) ))))
+(fringe x)
