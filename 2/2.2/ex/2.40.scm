@@ -1,0 +1,6 @@
+(define (unique_pair n)
+    (flatmap (lambda (i)
+                (map (lambda (j)
+                    (list i j)) (enumerate_interval 1 (- i 1))))
+             (enumerate_interval 1 n)))
+(unique_pair 100)
