@@ -63,3 +63,55 @@
 ; (define (salary_of_highest_paid_programmer records)
 ;     (accumulate max 0 (map salary (filter programmer? records))))
 
+(define (prime? n)
+    (define (square a)
+        (* a a))
+    (define (divides? a b)
+        (= (remainder b a) 0))
+    (define (find_divisor n test_divisor)
+        (cond 
+            ((> (square test_divisor) n) n)
+            ((divides? test_divisor n) test_divisor)
+            (else (find_divisor n (+ test_divisor 1)))))
+    (define (smallest_divisor n)
+        (find_divisor n 2))
+    (= n (smallest_divisor n)))
+
+
+(accumulate 
+    append
+    '()
+    (map (lambda (i)
+            (map (lambda (j) (list i j)) 
+                 (enumerate_interval 1 (- i 1))))
+         (enumerate_interval 1 10)))
+
+(define (flatmap proc seq)
+    (accumulate append '() (map proc seq)))
+
+(define (prime_sum? pair)
+    (prime? (+ (car pair) (cadr pair))))
+
+(define (make_pair_sum pair)
+    (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
+
+(define (prime_sum_pairs n)
+    (map make_pair_sum
+         (filter prime_sum?
+                 (flatmap 
+                    (lambda (i) 
+                        (map (lambda (j) (list i j)) 
+                             (enumerate_interval 1 (- i 1))))
+                    (enumerate_interval 1 n)))))
+(prime_sum_pairs 5)
+
+(define (permutations s)
+    (if (null? s)
+        (list '())
+        (flatmap (lambda (x)
+                    (map (lambda (p) (cons x p))
+                         (permutations (remove x s))))
+                 s)))
+(define (remove item sequence)
+    (filter (lambda (x) (not (= x item))) sequence))
+(permutations '(1 2 3))
