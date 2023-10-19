@@ -1,3 +1,14 @@
+(define (flatmap proc seq)
+    (accumulate append '() (map proc seq)))        
+(define (enumerate_interval low high)
+    (if (> low high)
+        '()
+        (cons low (enumerate_interval (+ low 1) high))))
+(define (accumulate op initial sequence)
+    (if (null? sequence)
+        initial
+        (op (car sequence) (accumulate op initial (cdr sequence)))))
+
 (define (adjoin_position row col board)
     (cons (list row col) board))
 
@@ -12,6 +23,7 @@
              )))
 
 (define (safe? k positions)
+    (newline)(display k)(display positions)
     (define (iter current positions)
         (if (null? positions)
             #t
