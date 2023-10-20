@@ -1,0 +1,6 @@
+(define (equal? a b)
+    (cond (and (null? a) (null? b) true)
+          ((eq? (car a) (car b)) (equal? (cdr a) (cdr b)))
+          (else false)))
+(equal? '(this is a list) 
+        '(this is a list))
