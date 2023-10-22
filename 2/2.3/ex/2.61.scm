@@ -1,0 +1,8 @@
+(define (adjoin_set x set)
+    (cond ((or (null? set) (< x (car set))) (cons x set))
+          ((= x (car set)) set)
+          (else (cons (car set) (adjoin_set x (cdr set))))))
+(adjoin_set 1 '(2 3 4))
+(adjoin_set 1 '(0 1 2))
+(adjoin_set 1 '(0 2 3))
+(adjoin_set 4 '(0 1 2))

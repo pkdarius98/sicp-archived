@@ -1,0 +1,6 @@
+(define (make_segment vect_start vect_end)
+    (cons vect_start vect_end))
+(define (start_segment segment)
+    (car segment))
+(define (end_segment segment)
+    (cdr segment))

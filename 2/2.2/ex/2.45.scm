@@ -1,0 +1,6 @@
+(define (split first second)
+    (lambda (painter)
+        (let ((second_half (second painter painter)))
+            (first painter second_half))))
+(define right_split (split beside below))
+(define up_split (split below beside))
