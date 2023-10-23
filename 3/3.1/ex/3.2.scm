@@ -1,0 +1,12 @@
+(define (make_monitored f)
+    (let ((count 0))
+        (lambda (x)
+            (if (eq? x 'how_many_calls?)
+                count
+                (begin (set! count (+ count 1))
+                       (f x))))))
+(define s (make_monitored sqrt))
+(s 100)
+(s 'how_many_calls?)
+(s 100)
+(s 'how_many_calls?)
