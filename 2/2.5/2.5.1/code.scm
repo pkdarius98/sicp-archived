@@ -17,7 +17,7 @@
     (put 'make 'scheme_number
         (lambda (x) (tag x)))
     'done)
-
+;;
 (define (install_rational_package)
     (define (number x) (car x))
     (define (denom x) (cdr x))
@@ -25,9 +25,9 @@
         (let ((g (gcd n d)))
             (cons (/ n g) (/ d g))))
     (define (add_rat x y)
-    (make_rat (+ (* (numer x) (denom y))
-                 (* (numer y) (denom x)))
-              (* (denom x) (denom y))))
+        (make_rat (+ (* (numer x) (denom y))
+                     (* (numer y) (denom x)))
+                  (* (denom x) (denom y))))
     (define (sub_rat x y)
         (make_rat (- (* (numer x) (denom y))
                      (* (numer y) (denom x)))
@@ -50,3 +50,82 @@
     (put 'make 'rational
         (lambda (n d) (tag (make_rat n d))))
   'done)
+;;
+(define (install_complex_package)
+  ;; imported procedures from rectangular 
+  ;; and polar packages
+    (define (make_from_real_imag x y)
+        ((get 'make_from_real_imag 
+            'rectangular) 
+        x y))
+    (define (make_from_mag_ang r a)
+        ((get 'make_from_mag_ang 'polar) 
+        r a))
+    ;; internal procedures
+    (define (add_complex z1 z2)
+        (make_from_real_imag 
+        (+ (real_part z1) (real_part z2))
+        (+ (imag_part z1) (imag_part z2))))
+    (define (sub_complex z1 z2)
+        (make_from_real_imag 
+        (- (real_part z1) (real_part z2))
+        (- (imag_part z1) (imag_part z2))))
+    (define (mul_complex z1 z2)
+        (make_from_mag_ang 
+        (* (magnitude z1) (magnitude z2))
+        (+ (angle z1) (angle z2))))
+    (define (div_complex z1 z2)
+        (make_from_mag_ang 
+        (/ (magnitude z1) (magnitude z2))
+        (- (angle z1) (angle z2))))
+    ;; interface to rest of the system
+    (define (tag z) (attach_tag 'complex z))
+    (put 'add '(complex complex)
+        (lambda (z1 z2) 
+            (tag (add_complex z1 z2))))
+    (put 'sub '(complex complex)
+        (lambda (z1 z2) 
+            (tag (sub_complex z1 z2))))
+    (put 'mul '(complex complex)
+        (lambda (z1 z2) 
+            (tag (mul_complex z1 z2))))
+    (put 'div '(complex complex)
+        (lambda (z1 z2) 
+            (tag (div_complex z1 z2))))
+    (put 'make_from_real_imag 'complex
+        (lambda (x y) 
+            (tag (make_from_real_imag x y))))
+    (put 'make_from_mag_ang 'complex
+        (lambda (r a) 
+            (tag (make_from_mag_ang r a))))
+    'done)
+;;
+(define (make_scheme_number n)
+    ((get 'make 'scheme_number) n))
+(define (make_rational n d)
+    ((get 'make 'rational) n d))
+(define (make_complex_from_real_imag x y)
+    ((get 'make_from_real_imag 'complex) x y))
+(define (make_complex_from_mag_ang r a)
+    ((get 'make_from_mag_ang 'complex) r a))
+;;
+(define (scheme_number_to_complex n)
+    (make_complex_from_real_imag (contents n) 0))
+(put_coercion 'scheme_number 'complex scheme_number_to_complex)
+
+(define (apply_generic op . args)
+    (let ((type_tags (map type_tag args)))
+        (let ((proc (get op type_tags)))
+            (if proc
+                (apply proc (map contents args))
+                (if (= (length args) 2)
+                    (let ((type1 (car type_tags))
+                          (type2 (cadr type_tags))
+                          (a1 (car args))
+                          (a2 (cadr args)))
+                        (let ((t1_to_t2 (get_coercion type1 type2))
+                              (t2_to_t1 (get_coercion type2 type1)))
+                            (cond (t1_to_t2 (apply_generic op (t1_to_t2 a1) a2))
+                                  (t2_to_t1 (apply_generic op a1 (t2_to_t1 a2)))
+                                  (else (error "No method for these types" (list op type_tags)))))
+                    (error "No method for these types: APPLY_GENERIC" (list op type_tags))))))))
