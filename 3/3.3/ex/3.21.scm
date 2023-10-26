@@ -1,0 +1,7 @@
+(define (print_queue queue)
+    (newline)
+    (define (iter item)
+        (if (not (null? item))
+            (begin (display (car item))(display " ")
+            (iter (cdr item)))))
+    (iter (front_ptr queue)))
